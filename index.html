@@ -13,18 +13,318 @@
         font-family: 'Cairo', sans-serif;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
-  }
-}
-</script>
-</head>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/"
+      }
+    }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="text/babel" data-type="module">
+      import React, { useState } from 'react';
+      import ReactDOM from 'react-dom/client';
+
+      // --- Inlined from types.ts ---
+      enum Page {
+        HOME,
+        PREPARATION,
+        VALUES,
+        MOTIVATION,
+        DISCIPLINE,
+        MENTAL_HEALTH,
+        PARTNERS,
+      }
+
+      interface PageData {
+        id: Page;
+        title: string;
+        icon: string;
+        image: string;
+        content: string[];
+      }
+      
+      // --- Inlined from constants.ts ---
+      const PAGES_DATA: PageData[] = [
+        {
+          id: Page.PREPARATION,
+          title: 'التهيئة وبداية العام',
+          icon: '🏠',
+          image: 'https://picsum.photos/seed/parents_alarm_clock_school/400/400',
+          content: [
+            'الانفصال التدريجي عن الأجهزة الذكية.',
+            'التدريب على النوم المبكر.',
+            'تعزيز الاتجاهات الإيجابية نحو البيئة المدرسية.',
+            'تزويد الموجهة الطلابية بالتغيرات السلوكية لتقديم الدعم.',
+          ],
+        },
+        {
+          id: Page.VALUES,
+          title: 'القيم والسلوك الإيجابي',
+          icon: '🌟',
+          image: 'https://picsum.photos/seed/dialogue_heart_chat/400/400',
+          content: [
+            'غرس قيم الإسلام كالتسامح وآداب الحوار.',
+            'تعميق الهوية الوطنية والمحافظة على ممتلكات الوطن.',
+            'استخدام النمذجة والحوار الأسري الهادف.',
+            'تعويد الطالبات على تحمل المسؤولية وتنظيم الوقت.',
+          ],
+        },
+        {
+          id: Page.MOTIVATION,
+          title: 'تنمية الدافعية للتعلم',
+          icon: '🚀',
+          image: 'https://picsum.photos/seed/rocket_target_goals/400/400',
+          content: [
+            '**تحديد الأهداف:** تدريب الطالبات على تحديد الأهداف (قصيرة، متوسطة، بعيدة المدى).',
+            '**العادات الدراسية:** توجيههن للعادات الدراسية (التنظيم، التكرار، بيئة الدراسة).',
+            '**تعزيز الكفاءات:** تعزيز الكفاءات النفسية والمعرفية مع مراعاة الفروق الفردية.',
+          ],
+        },
+        {
+          id: Page.DISCIPLINE,
+          title: 'تعزيز الانضباط المدرسي',
+          icon: '🔔',
+          image: 'https://picsum.photos/seed/alarm_calendar_checkmark/400/400',
+          content: [
+            '**الحرص على الحضور:** الحرص على الحضور اليومي والمبكر.',
+            '**الالتزام بالأنظمة:** الالتزام بأنظمة المدرسة وتعليماتها.',
+            '**تنظيم الإجازات:** تنظيم السفر والإجازات خلال العطل الرسمية.',
+            '**التواصل والمشاركة:** التواصل المستمر مع المدرسة والمشاركة في مجالسها.',
+          ],
+        },
+        {
+          id: Page.MENTAL_HEALTH,
+          title: 'الصحة النفسية للطالبات',
+          icon: '❤️',
+          image: 'https://picsum.photos/seed/family_shield_heart/400/400',
+          content: [
+            '**توفير البيئة الآمنة:** توفير بيئة آمنة وداعمة (حب، اهتمام، انتماء).',
+            '**المرونة:** تعزيز المرونة والقدرة على التكيف مع التحديات.',
+            '**إدارة الضغوط:** تدريب الطالبة على مهارات إدارة الضغوط.',
+            '**نمذجة السلوكيات:** نمذجة السلوكيات الإيجابية في التواصل والضبط الانفعالي.',
+            '**التنشئة السليمة:** اتباع أساليب تنشئة سليمة تعزز الصحة النفسية.',
+            '**الاستقلالية والثقة بالنفس:** بناء الاستقلالية والثقة بالنفس وتجنب التدخل الزائد.',
+          ],
+        },
+      ];
+
+      const PARTNERS_PAGE = {
+          id: Page.PARTNERS,
+          title: 'أنتم شُركاؤنا الأول',
+          icon: '👨‍👩‍👧',
+          image: 'https://picsum.photos/seed/saudi_family/400/400',
+      };
+      
+      // --- Inlined from components/IconCard.tsx ---
+      interface IconCardProps {
+        icon: string;
+        title: string;
+        onClick: () => void;
+      }
+
+      const IconCard: React.FC<IconCardProps> = ({ icon, title, onClick }) => {
+        return (
+          <div
+            onClick={onClick}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-2 transform"
+          >
+            <span className="text-5xl sm:text-6xl mb-3">{icon}</span>
+            <h3 className="font-semibold text-sm sm:text-base text-teal-700 dark:text-teal-300">
+              {title}
+            </h3>
+          </div>
+        );
+      };
+
+      // --- Inlined from components/HomeScreen.tsx ---
+      interface HomeScreenProps {
+        onNavigate: (page: Page) => void;
+      }
+
+      const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
+        const allNavItems = [...PAGES_DATA, PARTNERS_PAGE];
+          
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8 pb-20">
+            <header className="text-center mb-8 sm:mb-12">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-teal-600 dark:text-teal-400">
+                دعم رحلة الطالبة التعليمية
+              </h1>
+              <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mt-2">
+                المدرسة المتوسطة الحادية والعشرون
+              </p>
+            </header>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full max-w-4xl">
+              {allNavItems.map((item) => (
+                <IconCard
+                  key={item.id}
+                  icon={item.icon}
+                  title={item.title}
+                  onClick={() => onNavigate(item.id)}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      };
+      
+      // --- Inlined from components/DetailScreen.tsx ---
+      interface DetailScreenProps {
+        pageData: PageData;
+        onBack: () => void;
+      }
+
+      const DetailScreen: React.FC<DetailScreenProps> = ({ pageData, onBack }) => {
+        return (
+          <div className="relative min-h-screen flex flex-col items-center p-6 md:p-10 pt-20 bg-teal-50 dark:bg-gray-800">
+            <button
+              onClick={onBack}
+              className="absolute top-6 right-6 bg-white dark:bg-gray-700 text-teal-600 dark:text-teal-400 rounded-full p-3 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+              aria-label="عودة"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 12h14" />
+              </svg>
+            </button>
+
+            <div className="w-full max-w-2xl text-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-teal-700 dark:text-teal-300 mb-8">
+                {pageData.title}
+              </h1>
+
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 md:p-8 text-right">
+                <ul className="space-y-4">
+                  {pageData.content.map((point, index) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-teal-500 ml-3 mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </span>
+                      <span className="text-gray-700 dark:text-gray-300 text-lg" dangerouslySetInnerHTML={{ __html: point.replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>') }}></span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- Inlined from components/FinalScreen.tsx ---
+      interface FinalScreenProps {
+        onBack: () => void;
+        pageData: {
+            title: string;
+            image: string;
+        };
+      }
+
+      const FinalScreen: React.FC<FinalScreenProps> = ({ onBack, pageData }) => {
+        return (
+          <div className="relative min-h-screen flex flex-col items-center p-6 md:p-10 pt-20 bg-teal-50 dark:bg-gray-800">
+            <button
+              onClick={onBack}
+              className="absolute top-6 right-6 bg-white dark:bg-gray-700 text-teal-600 dark:text-teal-400 rounded-full p-3 shadow-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+              aria-label="عودة"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 12h14" />
+              </svg>
+            </button>
+
+            <div className="w-full max-w-2xl text-center">
+              <h1 className="text-3xl md:text-4xl font-bold text-teal-700 dark:text-teal-300 mb-8">
+                {pageData.title}
+              </h1>
+
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 md:p-8 text-center space-y-6">
+                  <p className="text-gray-700 dark:text-gray-300 text-lg">
+                      دور الأسرة هو الأساس في بناء شخصية الطالبة ودعم مسيرتها التعليمية. أنتم الموجه الأول والداعم الأكبر لنجاحها وتحصيلها العلمي.
+                  </p>
+                  <div className="bg-teal-100 dark:bg-teal-900/50 border-r-4 border-teal-500 p-6 rounded-lg shadow-inner">
+                      <p className="text-teal-800 dark:text-teal-200 font-semibold italic">
+                          "فكونوا الداعم الأول واستثمروا في تعليم بناتكم وشجعوهن على الانضباط المدرسي، فأنتم شركاؤنا الأول في تحقيق الرؤى الطموحة."
+                      </p>
+                  </div>
+                  <a 
+                      href="mailto:najwa.bamahir@example.com" 
+                      className="inline-block bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition-colors duration-300 transform hover:scale-105 shadow-lg"
+                  >
+                      تواصل مع الموجهة الطلابية
+                  </a>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- Inlined from components/Footer.tsx ---
+      const Footer: React.FC = () => {
+        return (
+          <footer className="fixed bottom-0 left-0 w-full bg-gray-200 dark:bg-gray-800 text-center p-4 text-sm text-gray-600 dark:text-gray-400 shadow-inner z-10">
+            <p>الموجهة الطلابية: نجوى بامهير</p>
+          </footer>
+        );
+      };
+      
+      // --- Inlined from App.tsx ---
+      const App: React.FC = () => {
+        const [currentPage, setCurrentPage] = useState<Page>(Page.HOME);
+
+        const handleNavigate = (page: Page) => {
+          setCurrentPage(page);
+        };
+
+        const handleBack = () => {
+          setCurrentPage(Page.HOME);
+        };
+
+        const renderContent = () => {
+          if (currentPage === Page.HOME) {
+            return <HomeScreen onNavigate={handleNavigate} />;
+          }
+          
+          if (currentPage === Page.PARTNERS) {
+              return <FinalScreen onBack={handleBack} pageData={PARTNERS_PAGE} />;
+          }
+
+          const pageData = PAGES_DATA.find(p => p.id === currentPage);
+          if (pageData) {
+            return <DetailScreen pageData={pageData} onBack={handleBack} />;
+          }
+
+          return <HomeScreen onNavigate={handleNavigate} />; // Fallback to home
+        };
+
+        return (
+          <div className="bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-800 dark:text-gray-200 flex flex-col">
+            <main className="flex-grow">
+              {renderContent()}
+            </main>
+            <Footer />
+          </div>
+        );
+      };
+
+      // --- Inlined from index.tsx ---
+      const rootElement = document.getElementById('root');
+      if (!rootElement) {
+        throw new Error("Could not find root element to mount to");
+      }
+
+      const root = ReactDOM.createRoot(rootElement);
+      root.render(
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      );
+    </script>
   </body>
 </html>
