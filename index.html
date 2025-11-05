@@ -13,49 +13,40 @@
         font-family: 'Cairo', sans-serif;
       }
     </style>
+    <!-- React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel Standalone to transpile JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.2.0",
-        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-        "react/": "https://aistudiocdn.com/react@^19.2.0/"
-      }
-    }
-    </script>
-  </head>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/"
+  }
+}
+</script>
+</head>
   <body>
     <div id="root"></div>
-    <script type="text/babel" data-type="module">
-      import React, { useState } from 'react';
-      import ReactDOM from 'react-dom/client';
+    <script type="text/babel">
+      // --- Inlined Types and Constants ---
+      const Page = {
+        HOME: 0,
+        PREPARATION: 1,
+        VALUES: 2,
+        MOTIVATION: 3,
+        DISCIPLINE: 4,
+        MENTAL_HEALTH: 5,
+        PARTNERS: 6,
+      };
 
-      // --- Inlined from types.ts ---
-      enum Page {
-        HOME,
-        PREPARATION,
-        VALUES,
-        MOTIVATION,
-        DISCIPLINE,
-        MENTAL_HEALTH,
-        PARTNERS,
-      }
-
-      interface PageData {
-        id: Page;
-        title: string;
-        icon: string;
-        image: string;
-        content: string[];
-      }
-      
-      // --- Inlined from constants.ts ---
-      const PAGES_DATA: PageData[] = [
+      const PAGES_DATA = [
         {
           id: Page.PREPARATION,
           title: 'التهيئة وبداية العام',
           icon: '🏠',
-          image: 'https://picsum.photos/seed/parents_alarm_clock_school/400/400',
           content: [
             'الانفصال التدريجي عن الأجهزة الذكية.',
             'التدريب على النوم المبكر.',
@@ -67,7 +58,6 @@
           id: Page.VALUES,
           title: 'القيم والسلوك الإيجابي',
           icon: '🌟',
-          image: 'https://picsum.photos/seed/dialogue_heart_chat/400/400',
           content: [
             'غرس قيم الإسلام كالتسامح وآداب الحوار.',
             'تعميق الهوية الوطنية والمحافظة على ممتلكات الوطن.',
@@ -79,7 +69,6 @@
           id: Page.MOTIVATION,
           title: 'تنمية الدافعية للتعلم',
           icon: '🚀',
-          image: 'https://picsum.photos/seed/rocket_target_goals/400/400',
           content: [
             '**تحديد الأهداف:** تدريب الطالبات على تحديد الأهداف (قصيرة، متوسطة، بعيدة المدى).',
             '**العادات الدراسية:** توجيههن للعادات الدراسية (التنظيم، التكرار، بيئة الدراسة).',
@@ -90,7 +79,6 @@
           id: Page.DISCIPLINE,
           title: 'تعزيز الانضباط المدرسي',
           icon: '🔔',
-          image: 'https://picsum.photos/seed/alarm_calendar_checkmark/400/400',
           content: [
             '**الحرص على الحضور:** الحرص على الحضور اليومي والمبكر.',
             '**الالتزام بالأنظمة:** الالتزام بأنظمة المدرسة وتعليماتها.',
@@ -102,7 +90,6 @@
           id: Page.MENTAL_HEALTH,
           title: 'الصحة النفسية للطالبات',
           icon: '❤️',
-          image: 'https://picsum.photos/seed/family_shield_heart/400/400',
           content: [
             '**توفير البيئة الآمنة:** توفير بيئة آمنة وداعمة (حب، اهتمام، انتماء).',
             '**المرونة:** تعزيز المرونة والقدرة على التكيف مع التحديات.',
@@ -118,17 +105,10 @@
           id: Page.PARTNERS,
           title: 'أنتم شُركاؤنا الأول',
           icon: '👨‍👩‍👧',
-          image: 'https://picsum.photos/seed/saudi_family/400/400',
       };
       
       // --- Inlined from components/IconCard.tsx ---
-      interface IconCardProps {
-        icon: string;
-        title: string;
-        onClick: () => void;
-      }
-
-      const IconCard: React.FC<IconCardProps> = ({ icon, title, onClick }) => {
+      const IconCard = ({ icon, title, onClick }) => {
         return (
           <div
             onClick={onClick}
@@ -143,11 +123,7 @@
       };
 
       // --- Inlined from components/HomeScreen.tsx ---
-      interface HomeScreenProps {
-        onNavigate: (page: Page) => void;
-      }
-
-      const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
+      const HomeScreen = ({ onNavigate }) => {
         const allNavItems = [...PAGES_DATA, PARTNERS_PAGE];
           
         return (
@@ -175,12 +151,7 @@
       };
       
       // --- Inlined from components/DetailScreen.tsx ---
-      interface DetailScreenProps {
-        pageData: PageData;
-        onBack: () => void;
-      }
-
-      const DetailScreen: React.FC<DetailScreenProps> = ({ pageData, onBack }) => {
+      const DetailScreen = ({ pageData, onBack }) => {
         return (
           <div className="relative min-h-screen flex flex-col items-center p-6 md:p-10 pt-20 bg-teal-50 dark:bg-gray-800">
             <button
@@ -218,15 +189,7 @@
       };
 
       // --- Inlined from components/FinalScreen.tsx ---
-      interface FinalScreenProps {
-        onBack: () => void;
-        pageData: {
-            title: string;
-            image: string;
-        };
-      }
-
-      const FinalScreen: React.FC<FinalScreenProps> = ({ onBack, pageData }) => {
+      const FinalScreen = ({ onBack, pageData }) => {
         return (
           <div className="relative min-h-screen flex flex-col items-center p-6 md:p-10 pt-20 bg-teal-50 dark:bg-gray-800">
             <button
@@ -266,7 +229,7 @@
       };
 
       // --- Inlined from components/Footer.tsx ---
-      const Footer: React.FC = () => {
+      const Footer = () => {
         return (
           <footer className="fixed bottom-0 left-0 w-full bg-gray-200 dark:bg-gray-800 text-center p-4 text-sm text-gray-600 dark:text-gray-400 shadow-inner z-10">
             <p>الموجهة الطلابية: نجوى بامهير</p>
@@ -275,10 +238,10 @@
       };
       
       // --- Inlined from App.tsx ---
-      const App: React.FC = () => {
-        const [currentPage, setCurrentPage] = useState<Page>(Page.HOME);
+      const App = () => {
+        const [currentPage, setCurrentPage] = React.useState(Page.HOME);
 
-        const handleNavigate = (page: Page) => {
+        const handleNavigate = (page) => {
           setCurrentPage(page);
         };
 
@@ -313,12 +276,8 @@
         );
       };
 
-      // --- Inlined from index.tsx ---
+      // --- Rendering the App ---
       const rootElement = document.getElementById('root');
-      if (!rootElement) {
-        throw new Error("Could not find root element to mount to");
-      }
-
       const root = ReactDOM.createRoot(rootElement);
       root.render(
         <React.StrictMode>
